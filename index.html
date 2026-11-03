@@ -45,20 +45,24 @@
   .video-container { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
   .video-container iframe { width: 177.78%; height: 100%; border: 0; display: block; object-fit: cover; transform: scale(1.02); }
 
-  /* ЛОГОТИП ПО ЦЕНТРУ, РАЗМЕР 75% */
+  /* ЛОГОТИП ПО ЦЕНТРУ С РАЗМЕРОМ 75% */
   .live-watermark { 
     position: absolute; 
     inset: 0; 
     z-index: 2; 
     pointer-events: none; 
-    background-image: url('https://i.ibb.co/nqP0KKLc/2010-2012-2013.webp');
-    background-size: 75% auto; /* Занимает 75% ширины экрана, высота масштабируется автоматически */
-    background-position: center; /* Строго по центру */
-    background-repeat: no-repeat;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
     opacity: 0; 
     transition: opacity 0.5s ease; 
   }
   .live-watermark.visible { opacity: 1; }
+  .live-watermark img {
+    width: 75%; /* Логотип занимает 75% от ширины экрана */
+    height: auto;
+    object-fit: contain;
+  }
 
   .off-air { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #000; z-index: 20; text-align: center; pointer-events: auto; }
   .off-air-bg { 
@@ -109,8 +113,10 @@
     <div class="screen">
       <div class="screen-guard" id="screen-guard"></div>
       
-      <!-- Логотип по центру, размером 75% -->
-      <div class="live-watermark" id="watermark-logo-img"></div>
+      <!-- Логотип через тег img по центру -->
+      <div class="live-watermark" id="watermark-logo-container">
+        <img src="https://i.ibb.co/nqP0KKLc/2010-2012-2013.webp" alt="Карусель 2010" id="watermark-logo-img">
+      </div>
 
       <div class="video-container">
         <div id="player"></div>
@@ -283,7 +289,7 @@ function startTV() {
     overlay.style.pointerEvents = 'none';
   }
 
-  const watermark = document.getElementById('watermark-logo-img');
+  const watermark = document.getElementById('watermark-logo-container');
   if (watermark) watermark.classList.add('visible');
 }
 
@@ -390,3 +396,4 @@ function renderNextList(idx, curTime) {
 </script>
 </body>
 </html>
+ 
