@@ -45,12 +45,13 @@
   .video-container { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
   .video-container iframe { width: 177.78%; height: 100%; border: 0; display: block; object-fit: cover; transform: scale(1.02); }
 
+  /* ЛОГОТИП / ВОДЯНОЙ ЗНАК */
   .live-watermark { position: absolute; inset: 0; z-index: 2; pointer-events: none; display: flex; align-items: center; justify-content: center; }
-  .live-watermark img { width: 100%; height: 100%; object-fit: contain; display: block; opacity: 0; transition: opacity 0.5s ease; }
+  .live-watermark img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.5s ease; }
   .live-watermark img.visible { opacity: 1; }
 
   .off-air { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #000; z-index: 20; text-align: center; pointer-events: auto; }
-  .off-air-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: blur(4px); opacity: 0.5; }
+  .off-air-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: blur(6px); opacity: 0.6; }
   .off-air-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: rgba(9,30,63,0.85); width: 100%; height: 100%; backdrop-filter: blur(6px); padding: 20px; }
   .off-air .txt { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
   
@@ -135,7 +136,7 @@
 <script>
 function parseDuration(val) {
   if (typeof val === 'number') return val;
-  const parts = val.split(':').map(Number);
+  const parts = String(val).split(':').map(Number);
   if (parts.length === 3) {
     return parts[0] * 3600 + parts[1] * 60 + parts[2];
   } else if (parts.length === 2) {
@@ -156,8 +157,8 @@ const SCHEDULE = RAW_SCHEDULE.map(item => ({
 
 const TOTAL_DURATION = SCHEDULE.reduce((a, x) => a + x.duration, 0);
 
-// Используем ваш переданный файл логотипа
-const CUSTOM_LOGO = 'https://drive.google.com/uc?export=view&id=12Znfl193j0AV3S3ZkzTB2ekhi27qxgOQ';
+// Ссылка на ваш WEBP файл с Google Диска (скорректирована для прямой отдачи картинки)
+const LOGO_WEBP = 'https://drive.google.com/uc?export=view&id=12Znfl193j0AV3S3ZkzTB2ekhi27qxgOQ';
 
 let player = null;
 let muted = true;
@@ -165,8 +166,8 @@ let subtitlesEnabled = false;
 let currentIdx = -1;
 
 function updateLogos() {
-  document.getElementById('watermark-logo-img').src = CUSTOM_LOGO;
-  document.getElementById('overlay-logo-img').src = CUSTOM_LOGO;
+  document.getElementById('watermark-logo-img').src = LOGO_WEBP;
+  document.getElementById('overlay-logo-img').src = LOGO_WEBP;
 }
 
 function fmt(s) {
@@ -365,7 +366,7 @@ function updateLive() {
 
 function renderNextList(idx, curTime) {
   let html = '';
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= SCHEDULE.length - 1; i++) {
     const nextIdx = (idx + i) % SCHEDULE.length;
     const nextItem = SCHEDULE[nextIdx];
     let calcTime = 0;
