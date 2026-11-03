@@ -45,16 +45,15 @@
   .video-container { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
   .video-container iframe { width: 177.78%; height: 100%; border: 0; display: block; object-fit: cover; transform: scale(1.02); }
 
-  /* АККУРАТНЫЙ ЛОГОТИП В ПРАВОМ ВЕРХНЕМ УГЛУ (не растягивается на весь экран, а масштабируется корректно) */
+  /* ЛОГОТИП НА ВЕСЬ ЭКРАН */
   .live-watermark { 
     position: absolute; 
     inset: 0; 
     z-index: 2; 
     pointer-events: none; 
     background-image: url('https://i.ibb.co/nqP0KKLc/2010-2012-2013.webp');
-    background-size: 240px auto; /* Ширина логотипа (можно изменить под себя) */
-    background-repeat: no-repeat;
-    background-position: top 15px right 15px; /* Отступы от правого верхнего угла */
+    background-size: cover;
+    background-position: center;
     opacity: 0; 
     transition: opacity 0.5s ease; 
   }
@@ -66,10 +65,14 @@
     inset: 0; 
     width: 100%; 
     height: 100%; 
-    background: #091e3f;
+    background-image: url('https://i.ibb.co/nqP0KKLc/2010-2012-2013.webp');
+    background-size: cover;
+    background-position: center;
     z-index: 1; 
+    filter: blur(6px); 
+    opacity: 0.6; 
   }
-  .off-air-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: rgba(9,30,63,0.92); width: 100%; height: 100%; backdrop-filter: blur(6px); padding: 20px; }
+  .off-air-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: rgba(9,30,63,0.85); width: 100%; height: 100%; backdrop-filter: blur(6px); padding: 20px; }
   .off-air .txt { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
   
   .power-btn { background: var(--grad); color: #000; border: none; font-weight: 900; font-size: 18px; padding: 16px 36px; border-radius: 999px; cursor: pointer; box-shadow: 0 8px 26px rgba(255,102,0,.4); transition: transform .15s; pointer-events: auto; text-transform: uppercase; }
@@ -109,7 +112,7 @@
     <div class="screen">
       <div class="screen-guard" id="screen-guard"></div>
       
-      <!-- Логотип в правом верхнем углу -->
+      <!-- Логотип на весь экран -->
       <div class="live-watermark" id="watermark-logo-img"></div>
 
       <div class="video-container">
