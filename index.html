@@ -45,13 +45,33 @@
   .video-container { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
   .video-container iframe { width: 177.78%; height: 100%; border: 0; display: block; object-fit: cover; transform: scale(1.02); }
 
-  /* ЛОГОТИП НА ВЕСЬ ЭКРАН (PNG) */
-  .live-watermark { position: absolute; inset: 0; z-index: 2; pointer-events: none; display: flex; align-items: center; justify-content: center; }
-  .live-watermark img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.5s ease; }
-  .live-watermark img.visible { opacity: 1; }
+  /* ЛОГОТИП НА ВЕСЬ ЭКРАН */
+  .live-watermark { 
+    position: absolute; 
+    inset: 0; 
+    z-index: 2; 
+    pointer-events: none; 
+    background-image: url('https://i.ibb.co/nqP0KKLc/2010-2012-2013.webp');
+    background-size: cover;
+    background-position: center;
+    opacity: 0; 
+    transition: opacity 0.5s ease; 
+  }
+  .live-watermark.visible { opacity: 1; }
 
   .off-air { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #000; z-index: 20; text-align: center; pointer-events: auto; }
-  .off-air-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: blur(6px); opacity: 0.6; }
+  .off-air-bg { 
+    position: absolute; 
+    inset: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-image: url('https://i.ibb.co/nqP0KKLc/2010-2012-2013.webp');
+    background-size: cover;
+    background-position: center;
+    z-index: 1; 
+    filter: blur(6px); 
+    opacity: 0.6; 
+  }
   .off-air-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: rgba(9,30,63,0.85); width: 100%; height: 100%; backdrop-filter: blur(6px); padding: 20px; }
   .off-air .txt { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
   
@@ -92,16 +112,15 @@
     <div class="screen">
       <div class="screen-guard" id="screen-guard"></div>
       
-      <div class="live-watermark">
-        <img id="watermark-logo-img" alt="Карусель 2010">
-      </div>
+      <!-- Логотип на весь экран -->
+      <div class="live-watermark" id="watermark-logo-img"></div>
 
       <div class="video-container">
         <div id="player"></div>
       </div>
       
       <div class="off-air" id="unmute-overlay">
-        <img id="overlay-logo-img" class="off-air-bg" alt="Карусель 2010">
+        <div class="off-air-bg"></div>
         <div class="off-air-content">
           <div class="txt">Круглосуточный эфир канала «Карусель 2010»</div>
           <button class="power-btn" onclick="startTV()">▶ Включить эфир</button>
@@ -146,38 +165,8 @@ function parseDuration(val) {
 }
 
 const RAW_SCHEDULE = [
-  { id: 'vZf1oXNFFG4', duration: 2596, title: 'Майнкрафт наизнанку: Суперсилы | 13+' },
-  { id: 'vZf1oXNFFG4', duration: '8:57', title: 'Майнкрафт наизнанку. Приключения AleKS`а: Начало | 13+' },
-  { id: 'vZf1oXNFFG4', duration: '9:06', title: 'Майнкрафт наизнанку. Приключения AleKS`а 2: Секретный проход | 13+' },
-  { id: 'lSYlSigNT-k', duration: 5094, title: 'Яндекс.Колонка с Алисой | 18+' },
-  { id: 'WULuYBNSNN8', duration: 623, title: 'Дети-супергерои. 1 сезон | 13+' },
-  { id: '2TMzfMRX7VQ', duration: 722, title: 'Дети-супергерои. 2 сезон | 13+' },
-  { id: 'HnvcJcKkRgI', duration: '9:43', title: 'Дети-супергерои. 3 сезон | 13+' },
-  { id: 'hHLk6fi0BCuE', duration: '13:48', title: 'Фрэгас | 11+' },
-  { id: 'IiyvR7k-oaQ', duration: 732, title: 'Кошки | 13+' },
-  { id: 'MWmcBlp1hdw', duration: 757, title: 'Кошки. Нападение мышей | 13+' },
-  { id: 'fdDof2tYAdA', duration: 732, title: 'Кошки. Битва за роутер | 13+' },
-  { id: 'zNlUjPth92s', duration: "39:40", title: 'Кошки. Фильм | 13+' },
-  { id: 'hxFqD7rFCHY', duration: "11:27", title: 'Кошки. Весенние приключения | 13+' },
-  { id: 'KOrXH4P2lYM', duration: "11:57", title: 'Кошки. Лапа помощи | 13+' },
-  { id: 'qzGM2tzbPZM', duration: "11:41", title: 'Кошки и хозяева | 13+' },
-  { id: 'M39ibSy85iw', duration: "12:09", title: 'Кошки. Ой, милота! | 13+' },
-  { id: 'YuWeWcgdiHU', duration: "11:52", title: 'Кошки. Шерстяные клубки | 13+' },
-  { id: '-s1wllkcJY8', duration: "13:08", title: 'Кошки. Веселые истории | 13+' },
-  { id: 'O0l7Obz5GDM', duration: "13:52", title: 'Кошки. Юбилейный сезон | 13+' },
-  { id: 'vvpYz6GNFbw', duration: "1:12:50", title: 'Специальная серия влогов | 13+' },
-  { id: 'yOdZ-eBnk5o', duration: "1:52:47", title: 'Специальная серия влогов. Питер | 13+' },
-  { id: 'TOeAkmS8j2s', duration: "39:04", title: 'НейроМузAleKS | 15+' },
-  { id: 'Gn2-lKghcO8', duration: "41:03", title: 'НейроМузAleKS. Новая волна | 15+' },
-  { id: 'X98laQopxX4', duration: "1:00:24", title: 'Приключения, Дачные приключения, Азбука Ютуберов, МультКлипы | 11+' },
-  { id: '9Pyr5Dfw1B0', duration: '31:57', title: 'Майнкрафт наизнанку | 13+' },
-  { id: 'ruiyqHyhqfM', duration: '31:57', title: 'Майнкрафт наизнанку 2. 1 сезон | 13+' },
-  { id: 'o1Pv19WZNOg', duration: '30:30', title: 'Майнкрафт наизнанку 2. 2 сезон. 1-5 серии | 13+' },
-  { id: 'Y2RQzntJ3rY', duration: '7:24', title: 'Майнкрафт наизнанку 2. 2 сезон. 6 серия | 13+' },
-  { id: 'nLlGqd7IddY', duration: 1246, title: 'Майнкрафт наизнанку: Последний перезапуск | 13+' },
-  { id: 'uBEY2TBJ4xo', duration: 1246, title: 'Майнкрафт наизнанку: Путешествие | 13+' },
-  { id: 'hBYW8uaiCDq0', duration: 1372, title: 'Майнкрафт наизнанку: Город | 13+' },
-  { id: 'rom5GpRXHJo', duration: 1247, title: 'Майнкрафт наизнанку: Новые приключения | 13+' }
+  { id: 'ddQ3lkbTfks', duration: '11:06:50', title: 'Лентяево' },
+  { id: 'AwbNNfXJJa4', duration: '8:28:52', title: 'Лентяево' }
 ];
 
 const SCHEDULE = RAW_SCHEDULE.map(item => ({
@@ -187,18 +176,10 @@ const SCHEDULE = RAW_SCHEDULE.map(item => ({
 
 const TOTAL_DURATION = SCHEDULE.reduce((a, x) => a + x.duration, 0);
 
-// Прямая ссылка на PNG логотип (`QQQ.png`) с Google Диска
-const LOGO_URL = 'https://drive.google.com/uc?export=view&id=1n9IL3qo-OAmbQXhOLSnLDvIDF05NV7qY';
-
 let player = null;
 let muted = true;
 let subtitlesEnabled = false;
 let currentIdx = -1;
-
-function updateLogos() {
-  document.getElementById('watermark-logo-img').src = LOGO_URL;
-  document.getElementById('overlay-logo-img').src = LOGO_URL;
-}
 
 function fmt(s) {
   if (isNaN(s) || s === null || s === undefined) return "00:00";
@@ -233,7 +214,6 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 function onYouTubeIframeAPIReady() {
-  updateLogos();
   const pos = currentPosition();
   currentIdx = pos.idx;
   try {
@@ -396,7 +376,7 @@ function updateLive() {
 
 function renderNextList(idx, curTime) {
   let html = '';
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i < SCHEDULE.length; i++) {
     const nextIdx = (idx + i) % SCHEDULE.length;
     const nextItem = SCHEDULE[nextIdx];
     let calcTime = 0;
