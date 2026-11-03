@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Телеканал «Карусель 2010» — Вещание 24/7</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; user-select: none; }
+  :root {
+    --bg: #091e3f; 
+    --panel: #112d5c; 
+    --panel2: #183d78; 
+    --border: #2c599d;
+    --text: #ffffff; 
+    --muted: #9ab4e0; 
+    --accent: #ff6600; 
+    --accent2: #ffcc00; 
+    --green: #2ecc71;
+    --grad: linear-gradient(135deg, #ff6600, #ffcc00);
+  }
+  body {
+    background: radial-gradient(1200px 600px at 70% -10%, #174282 0%, var(--bg) 55%);
+    color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh;
+  }
+  .wrap { max-width: 950px; margin: 0 auto; padding: 0 20px 60px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 0 18px; flex-wrap: wrap; }
+  .header-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .brand-logo { font-size: 30px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 1px; }
+  .live-clock { text-align: right; }
+  .live-clock .time { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; color: var(--accent2); }
+  .live-clock .date { color: var(--muted); font-size: 13px; }
+  .live-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(46,204,113,.15); border: 1px solid rgba(46,204,113,.5); color: var(--green); font-size: 12px; font-weight: 700; letter-spacing: 2px; padding: 6px 12px; border-radius: 999px; }
+  .live-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(46,204,113,.6);} 50% { opacity:.6; box-shadow:0 0 0 6px rgba(46,204,113,0);} }
+
+  .tv { background: linear-gradient(160deg, var(--panel2), var(--panel)); border: 2px solid var(--border); border-radius: 26px; padding: 14px; box-shadow: 0 30px 60px rgba(0,0,0,.6); }
+  
+  /* ЭКРАН 4:3 */
+  .screen { position: relative; border-radius: 16px; overflow: hidden; background: #000; aspect-ratio: 4/3; width: 100%; display: flex; align-items: center; justify-content: center; }
+  
+  .screen-guard { position: absolute; inset: 0; z-index: 5; background: transparent; pointer-events: auto; }
+  
+  /* АВТОМАТИЧЕСКОЕ УВЕЛИЧЕНИЕ ВИДЕО НА ВЕСЬ ЭКРАН (УСТРАНЕНИЕ ПОЛОС) */
+  .video-container { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
+  .video-container iframe { width: 177.78%; height: 100%; border: 0; display: block; object-fit: cover; transform: scale(1.02); }
+
+  .live-watermark { position: absolute; inset: 0; z-index: 2; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+  .live-watermark img { width: 100%; height: 100%; object-fit: contain; display: block; opacity: 0; transition: opacity 0.5s ease; }
+  .live-watermark img.visible { opacity: 1; }
+
+  .off-air { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #000; z-index: 20; text-align: center; pointer-events: auto; }
+  .off-air-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: blur(4px); opacity: 0.5; }
+  .off-air-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: rgba(9,30,63,0.85); width: 100%; height: 100%; backdrop-filter: blur(6px); padding: 20px; }
+  .off-air .txt { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+  
+  .power-btn { background: var(--grad); color: #000; border: none; font-weight: 900; font-size: 18px; padding: 16px 36px; border-radius: 999px; cursor: pointer; box-shadow: 0 8px 26px rgba(255,102,0,.4); transition: transform .15s; pointer-events: auto; text-transform: uppercase; }
+  .power-btn:hover { transform: translateY(-2px); }
+  
+  .tv-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 6px 4px; gap: 12px; flex-wrap: wrap; }
+  .controls { display: flex; gap: 8px; }
+  .controls button { background: var(--panel2); color: var(--text); border: 1px solid var(--border); width: 44px; height: 44px; border-radius: 12px; font-size: 18px; cursor: pointer; transition: .15s; display: flex; align-items: center; justify-content: center; }
+  .controls button:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; margin-top: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .card h2 { font-size: 13px; letter-spacing: 2.5px; color: var(--accent2); font-weight: 800; margin-bottom: 12px; }
+  .now-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+  .progress { height: 10px; background: #061327; border-radius: 999px; overflow: hidden; }
+  .progress > div { height: 100%; background: var(--grad); border-radius: 999px; width: 0%; transition: width 1s linear; }
+  .times { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+
+  .next-item { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(44,89,157,.4); font-size: 15px; }
+  .next-item:last-child { border-bottom: none; }
+  .next-item .when { color: var(--accent2); font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 26px; }
+  @media (max-width: 640px) { .live-clock .time { font-size: 22px; } }
+</style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+<div class="wrap">
+  <header>
+    <div class="header-left">
+      <div class="brand-logo">Карусель 2010</div>
+      <span class="live-badge"><span class="live-dot"></span>ПРЯМОЙ ЭФИР</span>
+    </div>
+    <div class="live-clock"><div class="time" id="clock">--:--</div><div class="date" id="date"></div></div>
+  </header>
+
+  <div class="tv">
+    <div class="screen">
+      <div class="screen-guard" id="screen-guard"></div>
+      
+      <div class="live-watermark">
+        <img id="watermark-logo-img" alt="Карусель 2010">
+      </div>
+
+      <div class="video-container">
+        <div id="player"></div>
+      </div>
+      
+      <div class="off-air" id="unmute-overlay">
+        <img id="overlay-logo-img" class="off-air-bg" alt="Карусель 2010">
+        <div class="off-air-content">
+          <div class="txt">Круглосуточный эфир канала «Карусель 2010»</div>
+          <button class="power-btn" onclick="startTV()">▶ Включить эфир</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tv-bar">
+      <div style="font-size:13px;color:var(--muted);">Телеканал «Карусель 2010»</div>
+      <div class="controls">
+        <button onclick="toggleMute()" id="mute-btn" title="Звук">🔇</button>
+        <button onclick="toggleSubtitles()" id="sub-btn" title="Субтитры">💬</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>СЕЙЧАС В ЭФИРЕ</h2>
+    <div class="now-title" id="now-title">Загрузка программы…</div>
+    <div class="progress"><div id="prog"></div></div>
+    <div class="times"><span id="elapsed">00:00</span><span id="remain">осталось --:--</span></div>
+  </div>
+
+  <div class="card">
+    <h2>ДАЛЕЕ В ЭФИРЕ</h2>
+    <div id="next-list"></div>
+  </div>
+
+  <footer>Телеканал «Карусель 2010» · Вещание 24/7</footer>
+</div>
+
+<script>
+function parseDuration(val) {
+  if (typeof val === 'number') return val;
+  const parts = val.split(':').map(Number);
+  if (parts.length === 3) {
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  } else if (parts.length === 2) {
+    return parts[0] * 60 + parts[1];
+  }
+  return Number(val) || 0;
+}
+
+const RAW_SCHEDULE = [
+  { id: 'ddQ3lkbTfks', duration: '11:06:50', title: 'Лентяево' },
+  { id: 'AwbNNfXJJa4', duration: '8:28:52', title: 'Лентяево' }
+];
+
+const SCHEDULE = RAW_SCHEDULE.map(item => ({
+  ...item,
+  duration: parseDuration(item.duration)
+}));
+
+const TOTAL_DURATION = SCHEDULE.reduce((a, x) => a + x.duration, 0);
+
+// Используем ваш переданный файл логотипа
+const CUSTOM_LOGO = 'https://drive.google.com/uc?export=view&id=12Znfl193j0AV3S3ZkzTB2ekhi27qxgOQ';
+
+let player = null;
+let muted = true;
+let subtitlesEnabled = false;
+let currentIdx = -1;
+
+function updateLogos() {
+  document.getElementById('watermark-logo-img').src = CUSTOM_LOGO;
+  document.getElementById('overlay-logo-img').src = CUSTOM_LOGO;
+}
+
+function fmt(s) {
+  if (isNaN(s) || s === null || s === undefined) return "00:00";
+  s = Math.max(0, Math.floor(s));
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(sec).padStart(2, '0');
+}
+
+function totalSecondsSinceEpoch() {
+  const baseDateUTC = Date.UTC(2026, 0, 1, 0, 0, 0);
+  return Math.floor((Date.now() - baseDateUTC) / 1000);
+}
+
+function currentPosition() {
+  let t = totalSecondsSinceEpoch() % TOTAL_DURATION;
+  if (t < 0) t += TOTAL_DURATION;
+  return findAt(t);
+}
+
+function findAt(t) {
+  let acc = 0;
+  for (let i = 0; i < SCHEDULE.length; i++) {
+    if (t < acc + SCHEDULE[i].duration) return { idx: i, start: t - acc };
+    acc += SCHEDULE[i].duration;
+  }
+  return { idx: 0, start: 0 };
+}
+
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+function onYouTubeIframeAPIReady() {
+  updateLogos();
+  const pos = currentPosition();
+  currentIdx = pos.idx;
+  try {
+    player = new YT.Player('player', {
+      videoId: SCHEDULE[pos.idx].id,
+      playerVars: { 
+        'autoplay': 1, 
+        'controls': 0, 
+        'disablekb': 1, 
+        'fs': 0, 
+        'rel': 0, 
+        'modestbranding': 1,
+        'cc_load_policy': 0,
+        'hl': 'ru',
+        'start': Math.floor(pos.start) 
+      },
+      events: { 
+        'onReady': onPlayerReady, 
+        'onStateChange': onPlayerStateChange,
+        'onError': onPlayerError
+      }
+    });
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function onPlayerError(event) {
+  const pos = currentPosition();
+  currentIdx = (pos.idx + 1) % SCHEDULE.length;
+  const nextItem = SCHEDULE[currentIdx];
+  if(player && typeof player.loadVideoById === 'function') {
+    player.loadVideoById({ videoId: nextItem.id, startSeconds: 0 });
+    if (typeof player.unloadModule === 'function') {
+      player.unloadModule('captions');
+    }
+  }
+}
+
+function onPlayerReady(event) {
+  event.target.mute();
+  event.target.playVideo();
+  
+  if (player && typeof player.unloadModule === 'function') {
+    player.unloadModule('captions');
+  }
+
+  const pos = currentPosition();
+  document.getElementById('now-title').innerText = SCHEDULE[pos.idx].title;
+  renderNextList(pos.idx, pos.start);
+
+  setInterval(updateLive, 1000);
+}
+
+function startTV() {
+  if (player && typeof player.unMute === 'function') {
+    player.unMute();
+    player.setVolume(100);
+    muted = false;
+    document.getElementById('mute-btn').innerText = '🔊';
+    
+    if (typeof player.playVideo === 'function') {
+      player.playVideo();
+    }
+  }
+  
+  const overlay = document.getElementById('unmute-overlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+    overlay.style.pointerEvents = 'none';
+  }
+
+  const watermark = document.getElementById('watermark-logo-img');
+  if (watermark) watermark.classList.add('visible');
+}
+
+function toggleMute() {
+  if (!player) return;
+  if (muted) {
+    player.unMute();
+    muted = false;
+    document.getElementById('mute-btn').innerText = '🔊';
+  } else {
+    player.mute();
+    muted = true;
+    document.getElementById('mute-btn').innerText = '🔇';
+  }
+}
+
+function toggleSubtitles() {
+  if (!player) return;
+  subtitlesEnabled = !subtitlesEnabled;
+  const subBtn = document.getElementById('sub-btn');
+  
+  if (subtitlesEnabled) {
+    if (typeof player.loadModule === 'function') player.loadModule('captions');
+    subBtn.style.borderColor = 'var(--accent2)';
+    subBtn.title = 'Субтитры: ВКЛ';
+  } else {
+    if (typeof player.unloadModule === 'function') player.unloadModule('captions');
+    subBtn.style.borderColor = 'var(--border)';
+    subBtn.title = 'Субтитры: ВЫКЛ';
+  }
+}
+
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    const pos = currentPosition();
+    currentIdx = pos.idx;
+    if (player && typeof player.loadVideoById === 'function') {
+      player.loadVideoById({ videoId: SCHEDULE[pos.idx].id, startSeconds: pos.start });
+      if (!subtitlesEnabled && typeof player.unloadModule === 'function') {
+        player.unloadModule('captions');
+      }
+    }
+  }
+}
+
+function updateLive() {
+  const now = new Date();
+  document.getElementById('clock').innerText = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('date').innerText = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+
+  const pos = currentPosition();
+  const item = SCHEDULE[pos.idx];
+
+  let curTime = pos.start;
+  if (player && typeof player.getCurrentTime === 'function') {
+    const val = player.getCurrentTime();
+    if (!isNaN(val)) {
+      curTime = val;
+    }
+  }
+
+  if (currentIdx !== pos.idx) {
+    currentIdx = pos.idx;
+    if (player && typeof player.loadVideoById === 'function') {
+      player.loadVideoById({ videoId: item.id, startSeconds: pos.start });
+      if (!subtitlesEnabled && typeof player.unloadModule === 'function') {
+        player.unloadModule('captions');
+      }
+    }
+    document.getElementById('now-title').innerText = item.title;
+    renderNextList(pos.idx, curTime);
+  } else if (player && typeof player.seekTo === 'function') {
+    if (Math.abs(curTime - pos.start) > 4) {
+      player.seekTo(pos.start, true);
+      curTime = pos.start;
+    }
+  }
+
+  const elapsed = curTime;
+  const remain = item.duration - curTime;
+  const pct = Math.min(100, Math.max(0, (elapsed / item.duration) * 100));
+
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('elapsed').innerText = fmt(elapsed);
+  document.getElementById('remain').innerText = 'осталось ' + fmt(remain);
+}
+
+function renderNextList(idx, curTime) {
+  let html = '';
+  for (let i = 1; i <= 3; i++) {
+    const nextIdx = (idx + i) % SCHEDULE.length;
+    const nextItem = SCHEDULE[nextIdx];
+    let calcTime = 0;
+    for (let j = 0; j < i; j++) {
+      const targetIdx = (idx + j) % SCHEDULE.length;
+      calcTime += (j === 0 ? (SCHEDULE[targetIdx].duration - curTime) : SCHEDULE[targetIdx].duration);
+    }
+    const targetDate = new Date(Date.now() + calcTime * 1000);
+    const timeStr = String(targetDate.getHours()).padStart(2, '0') + ':' + String(targetDate.getMinutes()).padStart(2, '0');
+    html += `<div class="next-item"><span class="title">${nextItem.title}</span><span class="when">~${timeStr}</span></div>`;
+  }
+  document.getElementById('next-list').innerHTML = html;
+}
+</script>
+</body>
+</html>
